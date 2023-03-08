@@ -5,7 +5,7 @@ k = 0
 pixels = []
 boundrys =[]
 
-file1 = open("output1.txt", "r")
+file1 = open("/home/marko/Desktop/Projekat/Projekat-Image-Rotation/Data/Output.txt", "r")
 if k == 0:
   text = file1.readline()
   boundrys=text.split(" ")

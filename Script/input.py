@@ -1,14 +1,14 @@
 import cv2 as cv
 import numpy
 print('hello world!')
-img=cv.imread('macka.jpg')
+img=cv.imread("/home/marko/Desktop/Projekat/Projekat-Image-Rotation/Data/macka.jpg")
 cv.imshow('cat',img)
 height = img.shape[0]
 width = img.shape[1]
-file = open ("DimenzijeMacka.txt" , "w")
+file = open ("/home/marko/Desktop/Projekat/Projekat-Image-Rotation/Data/Dimenzije.txt" , "w")
 file.write (str(height) + ' ' + str(width) )
 file.close()  
-file = open ("mackica.txt" , "w")
+file = open ("/home/marko/Desktop/Projekat/Projekat-Image-Rotation/Data/SlikaPixel.txt" , "w")
 
 for i in range (0,height):
 	for j in range (0,width):

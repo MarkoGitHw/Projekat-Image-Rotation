@@ -7,6 +7,7 @@
 #include <vector>
 #include <fstream>
 
+
 struct pixel{
  int blue;
  int green;
@@ -14,8 +15,8 @@ struct pixel{
  
 };
 
-typedef vector < vector < pixel > > ImageMatrix2D;
-typedef vector <pixel> ImageMatrix1D;
+typedef std::vector <std::vector < pixel > > ImageMatrix2D;
+typedef std::vector <pixel> ImageMatrix1D;
 
 
 #endif 
