@@ -11,7 +11,7 @@ Point2i LoadBoundry(string path)
   ifstream myBoundry;
   myBoundry.open(path);
   myBoundry>>Boundry.x>>Boundry.y;
-
+  myBoundry.close();
   return Boundry;
 }
 
