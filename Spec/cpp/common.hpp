@@ -9,9 +9,9 @@
 
 
 struct pixel{
- int blue;
- int green;
- int red;
+  int blue;
+  int green;
+  int red;
  
 };
 

@@ -12,7 +12,10 @@ ImageMatrix2D GetRotatedImage(Point2i NewBoundry,Point2i OldBoundry,ImageMatrix2
   int OldHeight = OldBoundry.x;
   int OldWidth = OldBoundry.y;
   cout << OldHeight << " " << OldWidth <<endl;
-  
+  double sinc = sin_custom(angle,128);
+  cout<< "Sinus" << sinc <<endl;
+  double cosc = sin_custom(90-angle,128);
+  cout<< "Kosinus" << cosc <<endl;
   int cy = OldWidth / 2;
   int cx = OldHeight / 2;
   string smer = direction;
@@ -28,25 +31,25 @@ ImageMatrix2D GetRotatedImage(Point2i NewBoundry,Point2i OldBoundry,ImageMatrix2
     for (int col= 0; col < NewWidth ; col++){
       //cout <<"New:"<<row<< "." << col <<endl;//
       if (smer == "right"){
-      x  = (int)((row-midx ) * cos(rads) - (col-midy) * sin(rads) +cx);
-      y  = (int)((col-midy ) * cos(rads) + (row-midx) * sin(rads) +cy);
-      cout << "Ok desno" <<endl;
-      //    cout << "Old:"<< OldRow <<"."<< OldCol << endl;//
+      x  = (int)((row-midx ) * cosc - (col-midy) * sinc +cx);
+      y  = (int)((col-midy ) * cosc + (row-midx) * sinc +cy);
+      
+      
       }
 
       if (smer == "left"){
 
-       x  = (int)((row-midx ) * cos(rads) + (col-midy) * sin(rads) +cx);
-       y  = (int)((col-midy ) * cos(rads) - (row-midx) * sin(rads) +cy);
+       x  = (int)((row-midx ) * cosc + (col-midy) * sinc +cx);
+       y  = (int)((col-midy ) * cosc - (row-midx) * sinc +cy);
 
-       cout << "Ok levo" <<endl;
+       
       }
       if (x >= 0 && x< OldHeight && y >= 0 && y< OldWidth)
 	{
 	  RotatedImage[row][col]=(OldImage[x][y]);
 	  
 	}
-      //  cout << RotatedImage[row][col].red <<" "<< RotatedImage[row][col].green <<" "<<RotatedImage[col][row].blue << " at "<<col<< " "<< row << endl;
+      
       
     }
     
@@ -64,20 +67,68 @@ ImageMatrix2D GetRotatedImage(Point2i NewBoundry,Point2i OldBoundry,ImageMatrix2
 Point2i FindNewBorder(Point2f CurrentBoundry,float angle){
 
   Point2i NewBoundry;
-  float rads = (angle * 3.14159265359 ) / 180 ;
+  double sinc = sin_custom(angle,128);
+  cout<< "Sinus" << sinc <<endl;
+  double cosc = sin_custom(90-angle,128);
+  cout<< "Kosinus" << cosc <<endl;
+  
   if(angle < 90) {
-    NewBoundry.x =(int)( CurrentBoundry.x * cos(rads) + CurrentBoundry.y * sin(rads));
-    NewBoundry.y =(int)( CurrentBoundry.x * sin(rads) + CurrentBoundry.y * cos(rads));
+    NewBoundry.x =(int)( CurrentBoundry.x * cosc + CurrentBoundry.y * sinc);
+    NewBoundry.y =(int)( CurrentBoundry.x * sinc + CurrentBoundry.y * cosc);
   }
   else{
     float x = CurrentBoundry.y;
     float y = CurrentBoundry.x;
     float rotangle = angle - 90;
     float rotanglerads =(rotangle*3.14159265359)/180;
-    NewBoundry.x =(int)( x * cos(rotanglerads) + y * sin(rotanglerads));
-    NewBoundry.y =(int)( x * sin(rotanglerads) + y * cos(rotanglerads));
+    NewBoundry.x =(int)( x * cosc + y * sinc);
+    NewBoundry.y =(int)( x * sinc + y * cosc);
 
 
   }
   return NewBoundry;
+}
+
+double factorial(int x) 
+{
+	double result_fact=1;
+
+	for (;x>=1;x--){
+		result_fact*=x;
+	}	
+return result_fact;
+}
+
+double radian(double x){
+	double radians;
+	double const pi = 3.14159265358979323846;
+	radians=(pi/180)*x;
+
+return radians;
+}
+
+double sin_custom(double x,int br_clanova){
+
+	double tejlor;
+	double rad=radian(x);
+	double a,b,c;
+	cout << rad << "radiani" <<endl;
+	for(int y=0; y!=br_clanova; y++){
+		a=power(-1,y);	
+		b=factorial((2*y)+1);
+		c=power(rad,(2*y)+1);
+		cout << c <<endl;
+		tejlor=tejlor+(a*c/b);
+}
+return tejlor;
+}
+
+double power(double base, int exponent)
+{
+double result=1;
+for (exponent; exponent>0; exponent--)
+{
+result = result * base;
+}
+return result;
 }

@@ -20,7 +20,7 @@ FileOps.o: FileOps.cpp FileOps.hpp common.hpp
 run:
 	@make spec
 	@echo "Running executable target \n"
-	@./spec $(Direction) $(Degree) 
+	@./spec  $(Direction) $(Degree)  
 
 clean:
 	@rm *.o spec
