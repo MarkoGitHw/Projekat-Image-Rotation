@@ -11,17 +11,17 @@ ImageMatrix2D GetRotatedImage(Point2i NewBoundry,Point2i OldBoundry,ImageMatrix2
   int x,y;
   int OldHeight = OldBoundry.x;
   int OldWidth = OldBoundry.y;
-  cout << OldHeight << " " << OldWidth <<endl;
-  double sinc = sin_custom(angle,128);
-  cout<< "Sinus" << sinc <<endl;
-  double cosc = sin_custom(90-angle,128);
-  cout<< "Kosinus" << cosc <<endl;
+  
+  double sinc = sin_custom(angle,64);
+  
+  double cosc = sin_custom(90-angle,64);
+   
   int cy = OldWidth / 2;
   int cx = OldHeight / 2;
   string smer = direction;
   int NewHeight = NewBoundry.x;
   int NewWidth  = NewBoundry.y;
-  cout << NewHeight <<" "<<NewWidth <<endl;
+  
   int midx = NewHeight/2 ;
   int midy = NewWidth/2 ;
   RotatedImage.resize(NewHeight,vector<pixel>(NewWidth));
@@ -29,7 +29,7 @@ ImageMatrix2D GetRotatedImage(Point2i NewBoundry,Point2i OldBoundry,ImageMatrix2
   for (int row = 0; row < NewHeight ; row++){
 
     for (int col= 0; col < NewWidth ; col++){
-      //cout <<"New:"<<row<< "." << col <<endl;//
+   
       if (smer == "right"){
       x  = (int)((row-midx ) * cosc - (col-midy) * sinc +cx);
       y  = (int)((col-midy ) * cosc + (row-midx) * sinc +cy);
@@ -64,28 +64,36 @@ ImageMatrix2D GetRotatedImage(Point2i NewBoundry,Point2i OldBoundry,ImageMatrix2
 
   
 }
-Point2i FindNewBorder(Point2f CurrentBoundry,float angle){
+Point2i FindNewBorder(Point2f CurrentBoundry,double angle){
 
   Point2i NewBoundry;
-  double sinc = sin_custom(angle,128);
-  cout<< "Sinus" << sinc <<endl;
-  double cosc = sin_custom(90-angle,128);
-  cout<< "Kosinus" << cosc <<endl;
+  double sinc,cosc;
   
   if(angle < 90) {
+
+    sinc = sin_custom(angle,256);
+    
+    cosc = sin_custom(90-angle,256);
+    
     NewBoundry.x =(int)( CurrentBoundry.x * cosc + CurrentBoundry.y * sinc);
     NewBoundry.y =(int)( CurrentBoundry.x * sinc + CurrentBoundry.y * cosc);
+    cout << NewBoundry.x << " " <<NewBoundry.y << endl;
   }
   else{
     float x = CurrentBoundry.y;
     float y = CurrentBoundry.x;
     float rotangle = angle - 90;
-    float rotanglerads =(rotangle*3.14159265359)/180;
+    sinc = sin_custom(rotangle,256);
+    cosc = sin_custom(90-rotangle,256);
+     
     NewBoundry.x =(int)( x * cosc + y * sinc);
     NewBoundry.y =(int)( x * sinc + y * cosc);
-
+    
 
   }
+  cout << NewBoundry.x<<" ";
+  cout << NewBoundry.y <<endl;
+  
   return NewBoundry;
 }
 
@@ -109,15 +117,14 @@ return radians;
 
 double sin_custom(double x,int br_clanova){
 
-	double tejlor;
+	double tejlor=0;
 	double rad=radian(x);
 	double a,b,c;
-	cout << rad << "radiani" <<endl;
+
 	for(int y=0; y!=br_clanova; y++){
 		a=power(-1,y);	
 		b=factorial((2*y)+1);
 		c=power(rad,(2*y)+1);
-		cout << c <<endl;
 		tejlor=tejlor+(a*c/b);
 }
 return tejlor;

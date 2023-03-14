@@ -17,6 +17,10 @@ int main (int argc,char * argv[])
     return 0;
   }
 
+ 
+  
+  
+  
   
   Point2f Boundry;
 
@@ -32,14 +36,14 @@ int main (int argc,char * argv[])
 
  
   
-  CALLGRIND_START_INSTRUMENTATION;
-  CALLGRIND_TOGGLE_COLLECT;
+  //CALLGRIND_START_INSTRUMENTATION;
+  //CALLGRIND_TOGGLE_COLLECT;
   NewBoundry = FindNewBorder(Boundry,stod(argv[2]));
 
   image2=GetRotatedImage(NewBoundry,Boundry,image,stod(argv[2]),argv[1]);
 
-  CALLGRIND_TOGGLE_COLLECT;
-  CALLGRIND_STOP_INSTRUMENTATION;
+  //CALLGRIND_TOGGLE_COLLECT;
+  //CALLGRIND_STOP_INSTRUMENTATION;
   StoreImageToFile("/home/marko/Desktop/Projekat/Projekat-Image-Rotation/Data/Output.txt",image2,NewBoundry.x,NewBoundry.y);
   
   

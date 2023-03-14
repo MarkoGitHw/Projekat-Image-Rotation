@@ -1,5 +1,5 @@
-CC = g++
-CFLAGS = -std=c++11 `pkg-config --cflags --libs opencv4`
+CC = g++ -lsystemc
+CFLAGS = `pkg-config --cflags --libs opencv4`
 
 spec: main.o ImageProcessing.o FileOps.o
 	@$(CC) main.o ImageProcessing.o FileOps.o -o spec $(CFLAGS)
