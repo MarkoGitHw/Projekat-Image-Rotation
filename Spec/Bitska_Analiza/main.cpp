@@ -9,94 +9,20 @@ using namespace std;
 
 int sc_main(int argc,char * argv[])
 {
-
+  
   
   if (argc < 2){
     cout << "Error!"<<endl; 
-
+    
     return 0;
   }
-  int W_angle = 3; /// potrebno za reprezentaciju celobrojnogdela ugla u radijanima //
-  cout << "cosinus: " << sin_custom(90-stod(argv[2]),64);
-  double angle = stod(argv[2]);
-  double rad = radian(angle);
-  double delta =0;
-  int prviL;
-  int prviI;
-  int drugiL;
-  double delta2 =0;
-  double delta3=0;
-  int W_sinc =1; 
-  sin_result_sc sinc_bit_test;
-  bool pass1 = false;
-  bool pass2 = false;
-  for (int L = 0 ; L < 50 ; L++){
-    
-    angle_sc rad_bit_test(W_angle+L,W_angle);
-    rad_bit_test = radian(angle);
-    cout << "Rezultat za format: "<< W_angle << "-" << L << " " << "je" << rad_bit_test <<endl;  
-    delta = abs(rad_bit_test - rad);
-    if (delta < 1.0e-5){
-      cout << "Prvi dobar format za predstavljanje uglova je: " << W_angle << "-" << L <<endl;
-      pass1 = true;
-    }
-    if (pass1 = true) {
-      for (int i = 0 ; i<64; i++){
-
-	delta2 = abs(sin_custom(rad_bit_test,i)-sin(rad));
-	cout << "Delta za format: " << W_angle << "." << L <<" i broj clanova: "<<i <<" je:"<<delta2<< endl;
-	if (delta2 < 1.0e-5){
-	  prviL = L;
-	  prviI = i;
-
-	  cout << "Prvi dobar broj clanova je : "<< i <<endl;
-	  pass2 = true;
-	  break;
-	}	    
-	
-	
-
-      }
-
-      if (pass2 == true)
-	break;
-
-    }
-  }
-  
-  angle_sc angle1(W_angle+prviL,W_angle);
-  angle1= radian(angle);
-    
-
-  for (int j = 0 ; j < 52 ; j++)
-
-    {
-      sin_result_sc sin_sc(W_sinc+j,W_sinc);
-      sin_sc= sin_custom(angle1,prviI);
-      delta3 =abs( sin_sc - sin(radian(angle)));
-      cout << "Delta za format: " << W_sinc << "." << j << " je: " << delta3 <<endl;
-
-      if (delta3 < 1.0e-5)
-	{
-	  break;
-	}
-      
-      
-      
-      
-    }
-  
-  
-  
-  
-  
-  
-  Point2f Boundry;
-
-  Point2f NewBoundry;
- 
+  Point2i Boundry;
+  Point2i NewBoundry;
+  point_rotated NewDims;
+  point_unrotated OldDims;
   Boundry = LoadBoundry("/home/marko/Desktop/Projekat/Projekat-Image-Rotation/Data/Dimenzije.txt");
-  
+  OldDims.x=Boundry.x;
+  OldDims.y=Boundry.y;
   ImageMatrix2D image,image2;
 
   
@@ -108,11 +34,114 @@ int sc_main(int argc,char * argv[])
   //CALLGRIND_START_INSTRUMENTATION;
   //CALLGRIND_TOGGLE_COLLECT;
   NewBoundry = FindNewBorder(Boundry,stod(argv[2]));
-
-  image2=SCGetRotatedImage(NewBoundry,Boundry,image,stod(argv[2]),argv[1]);
+  NewDims.x = NewBoundry.x;
+  NewDims.y = NewBoundry.y;
+  image2=SCGetRotatedImage(NewDims,OldDims,image,stoi(argv[2]),argv[1]);
 
   //CALLGRIND_TOGGLE_COLLECT;
   //CALLGRIND_STOP_INSTRUMENTATION;
+
+
+
+
+
+
+
+
+
+  
+    double lookup[MAX_SIZE_LOOKUP];
+  LookupGenerateBitAnalysis( lookup,1024);
+ 
+
+  double delta_cumulative = 0;
+  double avgdelta = 0;
+  double delta = 0;
+  bool pass1 = false;
+  bool pass2 = false;
+  
+  //Odredjivanje broja bita potrebnog sa prikaz u lookup tabeli//
+  int W = 1;
+  int L = 1;
+  int W2= 1;
+  //  cout <<"Sin je:"<< lookup[90] << endl;
+  lookup_vector lookup_sc;
+  
+  do{
+    for (int i = 1; i < 53; i++){
+      W = i;
+      for ( int j = 1; j <=W; j++){
+	L = j;
+	avgdelta = 0;
+	delta_cumulative = 0;
+        lookup_sc.clear();
+	sin_result_sc1 sc_sinx(W,L);
+	
+	for ( int k = 0; k <= 720 ;k++){
+	  sc_sinx = lookup[k];
+	  lookup_sc.push_back(sc_sinx);
+	  delta = abs(sc_sinx - lookup[k]);
+	 
+	  delta_cumulative +=delta;
+	  
+	}
+
+	avgdelta = delta_cumulative/720;
+	//cout << sc_sinx[0] << sc_sinx[90] << sc_sinx[180] << endl;//
+	cout <<"Srednja greska je: " << avgdelta <<" za format: " << L << " " << W-L << endl;
+	
+	
+	if (avgdelta < 0.00001){
+	  pass2 = true;
+	  // pass2 = SCGetRotatedImage_FormatChecker(NewBoundry,Boundry,image,stoi(argv[2]),argv[1],lookup_sc,W,L);
+	  // cout << lookup_sc.size() << endl;
+	  //cout << lookup_sc[0] << lookup_sc[90] <<endl;
+	  //if (pass2 == true ) {
+	    break;
+	}
+      
+
+
+
+
+
+      }
+      if  (avgdelta < 0.00001){
+
+	break;}
+	   
+ 
+    }
+    
+
+    
+   
+    
+    
+    //sad prokusavamo da redukujemo broj bita  
+  }while (pass2 ==false);
+  cout << W << "." << L <<endl;
+ 
+  /*  do{
+      for(int i = W ;i > 0 ;i--){
+      W2 = i;
+      cout << "Format koji proveravamo: " << L <<"."<< W2-L << endl;
+      pass2 = SCGetRotatedImage_FormatChecker(NewBoundry,Boundry,image,stoi(argv[2]),argv[1],lookup_sc,W2,L);
+      if(pass2 == false){
+	cout << "Prva greska se javlja za format: " << L <<"."<< W2-L << endl; 
+	break;
+	
+	
+      }
+      
+    }
+    
+
+    }while(pass2 == true);
+  
+  */
+  
+ 
   StoreImageToFile("/home/marko/Desktop/Projekat/Projekat-Image-Rotation/Data/Output.txt",image2,NewBoundry.x,NewBoundry.y);
   
   

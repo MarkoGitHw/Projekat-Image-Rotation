@@ -12,9 +12,9 @@ ImageMatrix2D GetRotatedImage(Point2i NewBoundry,Point2i OldBoundry,ImageMatrix2
   int OldHeight = OldBoundry.x;
   int OldWidth = OldBoundry.y;
   
-  double sinc = sin_custom(angle,64);
+  double sinc = sin(rads);
   
-  double cosc = sin_custom(90-angle,64);
+  double cosc = sin(radian(90)-rads);
    
   int cy = OldWidth / 2;
   int cx = OldHeight / 2;
@@ -71,23 +71,23 @@ Point2i FindNewBorder(Point2f CurrentBoundry,double angle){
   
   if(angle < 90) {
 
-    sinc = sin_custom(angle,256);
+    sinc = sin(radian(angle));
     
-    cosc = sin_custom(90-angle,256);
+    cosc = sin(radian(90-angle));
     
-    NewBoundry.x =(int)( CurrentBoundry.x * cosc + CurrentBoundry.y * sinc);
-    NewBoundry.y =(int)( CurrentBoundry.x * sinc + CurrentBoundry.y * cosc);
+    NewBoundry.x =(int)( abs(CurrentBoundry.x * cosc) + abs(CurrentBoundry.y * sinc));
+    NewBoundry.y =(int)(abs( CurrentBoundry.x * sinc) + abs(CurrentBoundry.y * cosc));
     cout << NewBoundry.x << " " <<NewBoundry.y << endl;
   }
   else{
     float x = CurrentBoundry.y;
     float y = CurrentBoundry.x;
     float rotangle = angle - 90;
-    sinc = sin_custom(rotangle,256);
-    cosc = sin_custom(90-rotangle,256);
+    sinc = sin(radian(rotangle));
+    cosc = sin(radian(90-rotangle));
      
-    NewBoundry.x =(int)( x * cosc + y * sinc);
-    NewBoundry.y =(int)( x * sinc + y * cosc);
+    NewBoundry.x =(int)(abs( x * cosc) + abs(y * sinc));
+    NewBoundry.y =(int)(abs( x * sinc) + abs(y * cosc));
     
 
   }
