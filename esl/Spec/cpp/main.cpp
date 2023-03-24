@@ -11,8 +11,10 @@ int main (int argc,char * argv[])
 {
 
 
-  if (argc < 2){
-    cout << "Error!"<<endl; 
+  if (argc < 5){
+    cout << "Error!: To run properly use the following formulation: "<<
+" make run Direction=left Degree=45 Boundry=~/Desktop/Projekat/github/Projekat-Image-Rotation/Data/Dimenzije.txt Pathi=~/Desktop/Projekat/github/Projekat-Image-Rotation/Data/Input.txt Patho=~/Desktop/Projekat/github/Projekat-Image-Rotation/Data/Output.txt"
+<<endl; 
 
     return 0;
   }
@@ -26,12 +28,12 @@ int main (int argc,char * argv[])
 
   Point2f NewBoundry;
  
-  Boundry = LoadBoundry("/home/marko/Desktop/Projekat/Projekat-Image-Rotation/Data/Dimenzije.txt");
+  Boundry = LoadBoundry(argv[3]);
   
   ImageMatrix2D image,image2;
 
   
-  image = LoadImageMakeMatrix("/home/marko/Desktop/Projekat/Projekat-Image-Rotation/Data/SlikaPixel.txt",Boundry.x,Boundry.y);
+  image = LoadImageMakeMatrix(argv[4],Boundry.x,Boundry.y);
 
 
  
@@ -44,7 +46,7 @@ int main (int argc,char * argv[])
 
   //CALLGRIND_TOGGLE_COLLECT;
   //CALLGRIND_STOP_INSTRUMENTATION;
-  StoreImageToFile("/home/marko/Desktop/Projekat/Projekat-Image-Rotation/Data/Output.txt",image2,NewBoundry.x,NewBoundry.y);
+  StoreImageToFile(argv[5],image2,NewBoundry.x,NewBoundry.y);
   
   
   

@@ -1,15 +1,22 @@
 import cv2 as cv
 import numpy
 import sys
-slika = str(sys.argv[1])
-img=cv.imread("/home/marko/Desktop/Projekat/Projekat-Image-Rotation/Data/"+slika)
+#Primer poziva:python3 input.py ~/Desktop/Projekat/github/Projekat-Image-Rotation/Data/macka.jpg ~/Desktop/Projekat/github/Projekat-Image-Rotation/Data/Dimenzije.txt ~/Desktop/Projekat/github/Projekat-Image-Rotation/Data/Input.txt
+
+# Argument 1 slika Argument 2 tekstulni fajl u koji ce se upisati dimenzije Argument 3 Upisati vrednosti pixela u fajl
+
+if len(sys.argv) != 4:
+        print("Sript was not called properly!")
+        exit()
+              
+img=cv.imread(sys.argv[1])
 cv.imshow('cat',img)
 height = img.shape[0]
 width = img.shape[1]
-file = open ("/home/marko/Desktop/Projekat/Projekat-Image-Rotation/Data/Dimenzije.txt" , "w")
+file = open (sys.argv[2] , "w")
 file.write (str(height) + ' ' + str(width) )
 file.close()  
-file = open ("/home/marko/Desktop/Projekat/Projekat-Image-Rotation/Data/SlikaPixel.txt" , "w")
+file = open (sys.argv[3] , "w")
 
 for i in range (0,height):
 	for j in range (0,width):

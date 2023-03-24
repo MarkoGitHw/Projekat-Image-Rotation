@@ -1,11 +1,15 @@
 import cv2 as cv
 import numpy as np
+import sys
 k = 0
-
+#Za prikazivanje rotirane slike koristiti kao prvi argument primer: python3 output.py ~/Desktop/Projekat/github/Projekat-Image-Rotation/Data/Output.txt
 pixels = []
 boundrys =[]
+if len(sys.argv) != 2:
+    print("Script wasn't calle properly!")
+    exit()
 
-file1 = open("/home/marko/Desktop/Projekat/Projekat-Image-Rotation/Data/Output.txt", "r")
+file1 = open(sys.argv[1], "r")
 if k == 0:
   text = file1.readline()
   boundrys=text.split(" ")
