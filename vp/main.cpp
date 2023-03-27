@@ -6,8 +6,9 @@ int sc_main(int argc, char *argv[])
 {
   if(argc != 6)
     {
-      cout << "VP takes 6 arguments" << endl;
-      cout << "Kupi keks" << endl;
+      cout << "VP takes 6 arguments." << endl;
+      cout << "For example: ./main_d dimension.txt inputFile.txt outputFile.txt angle direction" << endl;
+      cout << "For example: angle = 45, direction = right " << endl;
       
       return 0;
     }
