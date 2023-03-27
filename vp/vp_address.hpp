@@ -1,7 +1,7 @@
 #ifndef _VP_ADDRESS_HPP_
 #define _VP_ADDRESS_HPP_
 
-#include "gpio.hpp"
+#include "hardware.hpp"
 #include "memory.hpp"
 #include "common.hpp"
 
@@ -12,14 +12,14 @@ const sc_dt::uint64 VP_ADDRESS_CPU = 0x47A00000;
 //const sc_dt::uint64 VP_ADDRESS_CPU_ROTATED_IMAGE = VP_ADDRESS_CPU + CPU_ROTATED_IMAGE;
 //const sc_dt::uint64 VP_ADDRESS_CPU_COL = VP_ADDRESS_CPU + CPU_COL;
 
-const sc_dt::uint64 GPIO_ROW = 0x00000000; //loc addr for gpio
-const sc_dt::uint64 GPIO_COL = 0x00000001;
-const sc_dt::uint64 GPIO_READY = 0x00000002;
+const sc_dt::uint64 HARDWARE_ROW = 0x00000000; //loc addr for gpio
+const sc_dt::uint64 HARDWARE_COL = 0x00000001;
+const sc_dt::uint64 HARDWARE_READY = 0x00000002;
 
-const sc_dt::uint64 VP_ADDRESS_GPIO = 0x47B00000;
-const sc_dt::uint64 VP_ADDRESS_GPIO_ROW = VP_ADDRESS_GPIO + GPIO_ROW;
-const sc_dt::uint64 VP_ADDRESS_GPIO_COL = VP_ADDRESS_GPIO + GPIO_COL;
-const sc_dt::uint64 VP_ADDRESS_GPIO_READY = VP_ADDRESS_GPIO + GPIO_READY;
+const sc_dt::uint64 VP_ADDRESS_HARDWARE = 0x47B00000;
+const sc_dt::uint64 VP_ADDRESS_HARDWARE_ROW = VP_ADDRESS_HARDWARE + HARDWARE_ROW;
+const sc_dt::uint64 VP_ADDRESS_HARDWARE_COL = VP_ADDRESS_HARDWARE + HARDWARE_COL;
+const sc_dt::uint64 VP_ADDRESS_HARDWARE_READY = VP_ADDRESS_HARDWARE + HARDWARE_READY;
 
 const sc_dt::uint64 MEMORY_BOUNDARY_ROW = 0x00000000; //loc addr for mem
 const sc_dt::uint64 MEMORY_BOUNDARY_COL = 0x00000001;

@@ -13,7 +13,7 @@ public:
   memory(sc_core::sc_module_name);
 
   tlm_utils::simple_target_socket<memory> mem_ic_tsoc;
-  tlm_utils::simple_target_socket<memory> mem_gpio_tsoc;
+  tlm_utils::simple_target_socket<memory> mem_hard_tsoc;
 
 protected:
   //Point2i Boundary;

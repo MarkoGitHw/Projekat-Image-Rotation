@@ -3,7 +3,7 @@
 
 #include "common.hpp"
 #include "vp_address.hpp"
-#include "gpio.hpp"
+#include "hardware.hpp"
 #include <tlm>
 #include <tlm_utils/simple_target_socket.h>
 #include <tlm_utils/simple_initiator_socket.h>

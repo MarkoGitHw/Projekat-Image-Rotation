@@ -11,7 +11,7 @@ memory::memory(sc_module_name name):sc_module(name),
 				    mem_ic_tsoc("ic_mem_soc")
 {
   mem_ic_tsoc.register_b_transport(this, &memory::b_transport);
-  mem_gpio_tsoc.register_b_transport(this, &memory::b_transport);
+  mem_hard_tsoc.register_b_transport(this, &memory::b_transport);
   SC_REPORT_INFO("MEMORY", "Platform is constructed.");
 }
 

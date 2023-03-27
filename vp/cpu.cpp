@@ -248,9 +248,9 @@ void cpu::CPU_process()
   qk.set_and_sync(loct);
   loct += sc_time(2.2, SC_NS);
 
-  SC_REPORT_INFO("CPU", "Ready sent"); //Ready sent to memory
+  SC_REPORT_INFO("CPU", "Ready sent to Hardware"); //Ready sent to Hardware
   pl.set_command(TLM_WRITE_COMMAND);
-  pl.set_address(VP_ADDRESS_GPIO_READY);
+  pl.set_address(VP_ADDRESS_HARDWARE_READY);
   pl.set_data_ptr((unsigned char *)&ready);
   pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
 
