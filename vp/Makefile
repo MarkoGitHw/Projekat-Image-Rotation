@@ -5,11 +5,11 @@ CC = g++ -lsystemc
 
 main_d: main.o vp.o hardware.o cpu.o memory.o interconnect.o
 	@$(CC) main.o hardware.o cpu.o vp.o memory.o interconnect.o -o main_d  
-	@echo "Making main_d executable"
 
 main.o: main.cpp vp.cpp vp.hpp
 	@$(CC) -c main.cpp 
 	@echo "Compiling main.cpp"
+
 vp.o: vp.cpp vp.hpp common.hpp cpu.cpp cpu.hpp hardware.cpp hardware.hpp vp_address.hpp memory.hpp memory.cpp
 	@$(CC) -c vp.cpp 
 	@echo "Compiling vp.cpp"
