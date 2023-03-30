@@ -1,5 +1,5 @@
-#ifndef _HARDWARE_HPP_
-#define _HARDWARE_HPP_
+#ifndef _ROTATION_HPP_
+#define _ROTATION_HPP_
 
 #include "common.hpp"
 #include "vp_address.hpp"
@@ -8,14 +8,14 @@
 #include <tlm_utils/simple_initiator_socket.h>
 #include <tlm_utils/tlm_quantumkeeper.h>
 
-class hardware:public sc_core::sc_module
+class rotation:public sc_core::sc_module
 {
 public:
-  hardware(sc_core::sc_module_name);
+  rotation(sc_core::sc_module_name);
 
-  tlm_utils::simple_target_socket<hardware> hard_ic_tsoc;
-  tlm_utils::simple_initiator_socket<hardware> hard_mem_isoc;
-  tlm_utils::simple_initiator_socket<hardware> hard_ic_isoc;
+  tlm_utils::simple_target_socket<rotation> rot_ic_tsoc;
+  tlm_utils::simple_initiator_socket<rotation> rot_mem_isoc;
+  tlm_utils::simple_initiator_socket<rotation> rot_ic_isoc;
 
 protected:
   int rows, cols;
@@ -34,7 +34,7 @@ protected:
   
   typedef tlm::tlm_base_protocol_types::tlm_payload_type pl_t;
   void b_transport(pl_t &, sc_core::sc_time &);
-  void hardware_s();  
+  void rotation_s();  
 };
 
 #endif

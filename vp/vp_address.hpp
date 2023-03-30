@@ -1,7 +1,7 @@
 #ifndef _VP_ADDRESS_HPP_
 #define _VP_ADDRESS_HPP_
 
-#include "hardware.hpp"
+#include "rotation.hpp"
 #include "memory.hpp"
 #include "common.hpp"
 
@@ -9,10 +9,10 @@ const sc_dt::uint64 VP_ADDRESS_CPU = 0x47A00000;
 
 const sc_dt::uint64 CPU_ROTATED_IMAGE = 0x00000000;
 
-const sc_dt::uint64 HARDWARE_READY = 0x00000000;
+const sc_dt::uint64 ROTATION_READY = 0x00000000;
 
-const sc_dt::uint64 VP_ADDRESS_HARDWARE = 0x47B00000;
-const sc_dt::uint64 VP_ADDRESS_HARDWARE_READY = VP_ADDRESS_HARDWARE + HARDWARE_READY;
+const sc_dt::uint64 VP_ADDRESS_ROTATION = 0x47B00000;
+const sc_dt::uint64 VP_ADDRESS_ROTATION_READY = VP_ADDRESS_ROTATION + ROTATION_READY;
 
 const sc_dt::uint64 MEMORY_BOUNDARY_ROW = 0x00000000; 
 const sc_dt::uint64 MEMORY_BOUNDARY_COL = 0x00000001;

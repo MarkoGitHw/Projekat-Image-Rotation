@@ -236,9 +236,9 @@ void cpu::CPU_process()
   qk.set_and_sync(loct);
   loct += sc_time(5, SC_NS);
 
-  SC_REPORT_INFO("CPU", "Ready sent to Hardware"); //Ready sent to Hardware
+  SC_REPORT_INFO("CPU", "Ready sent to Rotation"); //Ready sent to Rotation
   pl.set_command(TLM_WRITE_COMMAND);
-  pl.set_address(VP_ADDRESS_HARDWARE_READY);
+  pl.set_address(VP_ADDRESS_ROTATION_READY);
   pl.set_data_ptr((unsigned char *)&ready);
   pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
 
@@ -261,7 +261,7 @@ void cpu::b_transport(pl_t& pl, sc_time& offset)
 	  {
 	  case VP_ADDRESS_CPU:
 	    RotatedImage = *((ImageMatrix2D*)pl.get_data_ptr());
-	    SC_REPORT_INFO("CPU", "Rotated image loaded from memory");
+	    SC_REPORT_INFO("CPU", "Rotated image loaded from Rotation");
 	    pl.set_response_status(TLM_OK_RESPONSE);
 	    StoreImageToFile(pathOut, RotatedImage, NewBoundary.x, NewBoundary.y);
 	    break;
