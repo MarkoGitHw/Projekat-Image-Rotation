@@ -56,5 +56,5 @@ void interconnect::b_transport(pl_t& pl, sc_time& offset)
       pl.set_response_status(TLM_COMMAND_ERROR_RESPONSE);
       SC_REPORT_ERROR("INTERCONNECT", "TLM bad command");
     }
-  offset += sc_time(2.2, SC_NS);
+  offset += sc_time(5, SC_NS);
 }

@@ -27,48 +27,40 @@ void memory::b_transport(pl_t& pl, sc_time& offset)
       {
 	switch(addr)
 	  {
-	  case MEMORY_BOUNDARY_ROW://0
+	  case MEMORY_BOUNDARY_ROW:  //MEMORY place 0
 	    rows = *((int*)pl.get_data_ptr());
 	    pl.set_response_status(TLM_OK_RESPONSE);
 	    msg(pl);
-	    //SC_REPORT_INFO("Memory", "Kernel received");
 	    break;
-	  case MEMORY_BOUNDARY_COL://1
+	  case MEMORY_BOUNDARY_COL:  //MEMORY place 1
 	    cols = *((int*)pl.get_data_ptr());
 	    pl.set_response_status(TLM_OK_RESPONSE);
 	    msg(pl);
-	    //SC_REPORT_INFO("Memory", "Kernel received");
 	    break;
-	  case MEMORY_IMAGE://2
+	  case MEMORY_IMAGE:         //MEMORY place 2
 	    Image2D = *((ImageMatrix2D*)pl.get_data_ptr());
 	    pl.set_response_status(TLM_OK_RESPONSE);
-	    //msg(pl);
 	    SC_REPORT_INFO("Memory", "Image received");
 	    break;
-	  case MEMORY_ANGLE://3
+	  case MEMORY_ANGLE:         //MEMORY place 3
 	    Angle = *((int*)pl.get_data_ptr());
 	    pl.set_response_status(TLM_OK_RESPONSE);
 	    msg(pl);
-	    //SC_REPORT_INFO("MEMORY", "ANGLE received");
 	    break;
-	  case MEMORY_DIRECTION://4
+	  case MEMORY_DIRECTION:     //MEMORY place 4
 	    direction = *((string*)pl.get_data_ptr());
 	    pl.set_response_status(TLM_OK_RESPONSE);
 	    msgs(pl);
-	    //cout << direction << endl;
-	    //SC_REPORT_INFO("MEMORY", "ANGLE received");
 	    break;
-	  case MEMORY_BOUNDARY_NROW://5
+	  case MEMORY_BOUNDARY_NROW: //MEMORY place 5
 	    nrows = *((int*)pl.get_data_ptr());
 	    pl.set_response_status(TLM_OK_RESPONSE);
 	    msg(pl);
-	    //SC_REPORT_INFO("Memory", "Kernel received");
 	    break;
-	  case MEMORY_BOUNDARY_NCOL://6
+	  case MEMORY_BOUNDARY_NCOL: //MEMORY place 6
 	    ncols = *((int*)pl.get_data_ptr());
 	    pl.set_response_status(TLM_OK_RESPONSE);
 	    msg(pl);
-	    //SC_REPORT_INFO("Memory", "Kernel received");
 	    break;
 	  default:
 	    pl.set_response_status(TLM_ADDRESS_ERROR_RESPONSE);
@@ -81,31 +73,31 @@ void memory::b_transport(pl_t& pl, sc_time& offset)
       {
 	switch(addr)
 	  {
-	  case MEMORY_BOUNDARY_ROW:
+	  case MEMORY_BOUNDARY_ROW:  //MEMORY place 0
 	    pl.set_data_ptr((unsigned char *)& rows);
 	    pl.set_response_status(TLM_OK_RESPONSE);
 	    break;
-	  case MEMORY_BOUNDARY_COL:
+	  case MEMORY_BOUNDARY_COL:  //MEMORY place 1
 	    pl.set_data_ptr((unsigned char *)& cols);
 	    pl.set_response_status(TLM_OK_RESPONSE);
 	    break;
-	  case MEMORY_IMAGE:
+	  case MEMORY_IMAGE:         //MEMORY place 2
 	    pl.set_data_ptr((unsigned char *)& Image2D);
 	    pl.set_response_status(TLM_OK_RESPONSE);
 	    break;
-	  case MEMORY_ANGLE:
+	  case MEMORY_ANGLE:         //MEMORY place 3
 	    pl.set_data_ptr((unsigned char *)& Angle);
 	    pl.set_response_status(TLM_OK_RESPONSE);
 	    break;
-	  case MEMORY_DIRECTION:
+	  case MEMORY_DIRECTION:     //MEMORY place 4
 	    pl.set_data_ptr((unsigned char *)& direction);
 	    pl.set_response_status(TLM_OK_RESPONSE);
 	    break;
-	  case MEMORY_BOUNDARY_NROW:
+	  case MEMORY_BOUNDARY_NROW: //MEMORY place 5
 	    pl.set_data_ptr((unsigned char *)& nrows);
 	    pl.set_response_status(TLM_OK_RESPONSE);
 	    break;
-	  case MEMORY_BOUNDARY_NCOL:
+	  case MEMORY_BOUNDARY_NCOL: //MEMORY place 6
 	    pl.set_data_ptr((unsigned char *)& ncols);
 	    pl.set_response_status(TLM_OK_RESPONSE);
 	    break;
@@ -121,7 +113,7 @@ void memory::b_transport(pl_t& pl, sc_time& offset)
       SC_REPORT_INFO("MEMORY", "TLM invalid command");
       break;
     }
-  offset += sc_time(2.2, SC_NS);
+  offset += sc_time(5, SC_NS);
 }
 
 void memory::msg(const pl_t& pl)

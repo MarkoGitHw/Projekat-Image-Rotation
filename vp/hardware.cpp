@@ -23,7 +23,6 @@ hardware::hardware(sc_module_name name):sc_module(name),
 
 ImageMatrix2D hardware::GetRotatedImage(Point2i NewBoundary, Point2i OldBoundary, ImageMatrix2D OldImage, sc_angle angle, string direction)
 {
-  //ImageMatrix2D RotatedImage;
   ImageMatrix1D PixelArray;
   pixel ZeroPixel;
 
@@ -254,14 +253,6 @@ ImageMatrix2D hardware::GetRotatedImage(Point2i NewBoundary, Point2i OldBoundary
   return RotatedImage;
 }
 
-double hardware::radian(double x)
-{
-  double const pi = 3.14159265358979323846;
-  radians = (pi / 180) * x;
-  
-  return radians;
-}
-
 void hardware::b_transport(pl_t& pl, sc_time& offset)
 {
   tlm_command cmd = pl.get_command();
@@ -274,17 +265,7 @@ void hardware::b_transport(pl_t& pl, sc_time& offset)
       {
 	switch(addr)
 	  {
-	  case HARDWARE_ROW:
-	    rows = *((int*)data);
-	    pl.set_response_status(TLM_OK_RESPONSE);
-	    SC_REPORT_INFO("HARDWARE", "Received row");
-	    break;
-	  case HARDWARE_COL:
-	    cols = *((int*)data);
-	    pl.set_response_status(TLM_OK_RESPONSE);
-	    SC_REPORT_INFO("HARDWARE", "Received col");
-	    break;
-	  case HARDWARE_READY:
+	  case HARDWARE_READY: 
 	    ready = *((unsigned char*)data);
 	    pl.set_response_status(TLM_OK_RESPONSE);
 	    hardware_s();
@@ -303,22 +284,12 @@ void hardware::b_transport(pl_t& pl, sc_time& offset)
       break;
     }
   
-  offset += sc_time(2.2, SC_NS);
-}
-
-void hardware::msg(const pl_t& pl)
-{
-  stringstream ss;
-  ss << hex << pl.get_address();
-  int val = *((int*)pl.get_data_ptr());
-  string cmd = "write ";
-  string msg = cmd + "val: " + to_string((int)val) + " addr: " + ss.str();
-  msg += " ,at " + sc_time_stamp().to_string();
+  offset += sc_time(5, SC_NS);
 }
 
 void hardware::hardware_s()
 {
-  SC_REPORT_INFO("HARDWARE", "Row loaded from memory"); //Boundary.x loaded from memory
+  SC_REPORT_INFO("HARDWARE", "Row loaded from memory");       //Boundary.x loaded from memory
   pl.set_command(TLM_READ_COMMAND);
   pl.set_address(MEMORY_BOUNDARY_ROW);
   pl.set_data_ptr((unsigned char*)&rows);
@@ -330,9 +301,9 @@ void hardware::hardware_s()
   cout << "rows: " << Boundary.x << endl;
   
   qk.set_and_sync(offset);
-  offset += sc_time(2.2, SC_NS);
+  offset += sc_time(5, SC_NS);
 
-  SC_REPORT_INFO("HARDWARE", "Col loaded from memory");  //Boundary.y loaded from memory
+  SC_REPORT_INFO("HARDWARE", "Col loaded from memory");       //Boundary.y loaded from memory
   pl.set_command(TLM_READ_COMMAND);
   pl.set_address(MEMORY_BOUNDARY_COL);
   pl.set_data_ptr((unsigned char*)&cols);
@@ -344,21 +315,21 @@ void hardware::hardware_s()
   cout << "cols: " << Boundary.y << endl;
   
   qk.set_and_sync(offset);
-  offset += sc_time(2.2, SC_NS);
+  offset += sc_time(5, SC_NS);
 
-  SC_REPORT_INFO("HARDWARE", "Image loaded from memory"); //Image loaded from memory
+  SC_REPORT_INFO("HARDWARE", "Image loaded from memory");     //Image loaded from memory
   pl.set_command(TLM_READ_COMMAND);
   pl.set_address(MEMORY_IMAGE);
   pl.set_data_ptr((unsigned char*)&Image2D);
   pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
   hard_mem_isoc -> b_transport(pl, offset);
 
-  Image2D = *((ImageMatrix2D*)pl.get_data_ptr()); //Loading image
+  Image2D = *((ImageMatrix2D*)pl.get_data_ptr());             //Loading image
 
   qk.set_and_sync(offset);
-  offset += sc_time(2.2, SC_NS);
+  offset += sc_time(5, SC_NS);
 
-  SC_REPORT_INFO("HARDWARE", "Angle loaded from memory"); //Angle loaded from memory
+  SC_REPORT_INFO("HARDWARE", "Angle loaded from memory");     //Angle loaded from memory
   pl.set_command(TLM_READ_COMMAND);
   pl.set_address(MEMORY_ANGLE);
   pl.set_data_ptr((unsigned char*)&Angle);
@@ -369,7 +340,7 @@ void hardware::hardware_s()
   cout << "Angle: " << Angle << endl;
   
   qk.set_and_sync(offset);
-  offset += sc_time(2.2, SC_NS);
+  offset += sc_time(5, SC_NS);
 
   SC_REPORT_INFO("HARDWARE", "Direction loaded from memory"); //Direction loaded from memory
   pl.set_command(TLM_READ_COMMAND);
@@ -382,10 +353,9 @@ void hardware::hardware_s()
   cout << "Direction: " << direction << endl;
   
   qk.set_and_sync(offset);
-  offset += sc_time(2.2, SC_NS);
-  //direction end
+  offset += sc_time(5, SC_NS);
 
-  SC_REPORT_INFO("HARDWARE", "NRow loaded from memory"); //NewBoundary.x loaded from memory
+  SC_REPORT_INFO("HARDWARE", "NRow loaded from memory");      //NewBoundary.x loaded from memory
   pl.set_command(TLM_READ_COMMAND);
   pl.set_address(MEMORY_BOUNDARY_NROW);
   pl.set_data_ptr((unsigned char*)&nrows);
@@ -397,9 +367,9 @@ void hardware::hardware_s()
   cout << "nrows: " << NewBoundary.x << endl;
   
   qk.set_and_sync(offset);
-  offset += sc_time(2.2, SC_NS);
+  offset += sc_time(5, SC_NS);
 
-  SC_REPORT_INFO("HARDWARE", "NCol loaded from memory"); //NewBoundary.x loaded from memory
+  SC_REPORT_INFO("HARDWARE", "NCol loaded from memory");      //NewBoundary.x loaded from memory
   pl.set_command(TLM_READ_COMMAND);
   pl.set_address(MEMORY_BOUNDARY_NCOL);
   pl.set_data_ptr((unsigned char*)&ncols);
@@ -411,11 +381,11 @@ void hardware::hardware_s()
   cout << "ncols: " << NewBoundary.y << endl;
   
   qk.set_and_sync(offset);
-  offset += sc_time(2.2, SC_NS);
+  offset += sc_time(5, SC_NS);
 
   GetRotatedImage(NewBoundary, Boundary, Image2D, Angle, direction);
 
-  SC_REPORT_INFO("HARDWARE", "Rotated image sent to CPU");
+  SC_REPORT_INFO("HARDWARE", "Rotated image sent to CPU");    //Rotated image sent to CPU
   pl.set_command(TLM_WRITE_COMMAND);
   pl.set_address(VP_ADDRESS_CPU);
   pl.set_data_ptr((unsigned char*)& RotatedImage);
@@ -423,6 +393,6 @@ void hardware::hardware_s()
   hard_ic_isoc -> b_transport(pl, offset);
   
   qk.set_and_sync(offset);
-  offset += sc_time(2.2, SC_NS);
+  offset += sc_time(5, SC_NS);
 }
 

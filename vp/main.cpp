@@ -4,21 +4,16 @@ using namespace std;
 
 int sc_main(int argc, char *argv[])
 {
-  if(argc != 6)
+  if(argc < 5)
     {
-      cout << "VP takes 6 arguments." << endl;
-      cout << "For example: ./main_d dimension.txt inputFile.txt outputFile.txt angle direction" << endl;
-      cout << "For example: angle = 45, direction = right " << endl;
+      cout << "Invalid make. Try example below." << endl;
+      cout << "Example: make run Angle=45 Direction=left" << endl;
       
       return 0;
     }
   
   vp uut("VirPlat");
-  uut.soft.setPathBoundary(argv[1]);
-  uut.soft.setPathIn(argv[2]);
-  uut.soft.setPathOut(argv[3]);
-  uut.soft.setPathAngle(argv[4]);
-  uut.soft.setPathDirection(argv[5]);
+  uut.soft.setPath(argv[1], argv[2], argv[3], argv[4], argv[5]);
   
   sc_start(2, sc_core::SC_SEC);
 

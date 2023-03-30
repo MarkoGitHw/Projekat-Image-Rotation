@@ -26,18 +26,15 @@ protected:
   unsigned char ready;
   std::string direction;
   ImageMatrix2D Image2D, RotatedImage;
-  double radians;
   
   tlm::tlm_generic_payload pl;
   tlm_utils::tlm_quantumkeeper qk;
 
   ImageMatrix2D GetRotatedImage(Point2i NewBoundary, Point2i OldBoundary, ImageMatrix2D OldImage, sc_angle angle, std::string direction);
-  double radian(double x);
   
   typedef tlm::tlm_base_protocol_types::tlm_payload_type pl_t;
   void b_transport(pl_t &, sc_core::sc_time &);
-  void hardware_s();
-  void msg(const pl_t&);
+  void hardware_s();  
 };
 
 #endif
