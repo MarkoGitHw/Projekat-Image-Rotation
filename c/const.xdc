@@ -1,0 +1,1 @@
+create_clock -period 13.4000 -name clk_i -waveform {0.000 6.7000} -add [get_ports clk_i]
