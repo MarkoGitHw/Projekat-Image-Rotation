@@ -4,7 +4,7 @@
 #include "common.hpp"
 #include "cpu.hpp"
 #include "vp_address.hpp"
-#include "gpio.hpp"
+#include "rotation.hpp"
 #include "memory.hpp"
 #include "interconnect.hpp"
 
@@ -14,7 +14,7 @@ public:
   vp(sc_core::sc_module_name);
   cpu soft;
 protected:
-  gpio hard;
+  rotation hard;
   memory bram;
   interconnect ic;
 };

@@ -13,34 +13,22 @@ cpu::cpu(sc_module_name name):sc_module(name)
   SC_REPORT_INFO("CPU", "Platform is constructed");
 }
 
-void cpu::setPathBoundary(char *path) //set path for Boundary
+void cpu::setPath(char *pathB, char *pathI, char *pathO, char *pathA, char *pathD)
 {
   cout << endl;
-  pathBoundary = path;
+  pathBoundary = pathB;
   cout << pathBoundary << endl;
-}
 
-void cpu::setPathIn(char *path) //set path for inputFile
-{
-  pathIn = path;
+  pathIn = pathI;
   cout << pathIn << endl;
-}
 
-void cpu::setPathOut(char *path) //set path for outputFile
-{
-  pathOut = path;
+  pathOut = pathO;
   cout << pathOut << endl;
-}
 
-void cpu::setPathAngle(char *path) //set path for Angle
-{
-  pathAngle = path;
+  pathAngle = pathA;
   cout << pathAngle << endl;
-}
 
-void cpu::setPathDirection(char *path) //set path for Direction
-{
-  pathDirection = path;
+  pathDirection = pathD;
   cout << pathDirection << endl;
 }
 
@@ -178,7 +166,7 @@ void cpu::CPU_process()
 
   cpu_ic_isoc1 -> b_transport(pl, loct);
   qk.set_and_sync(loct);
-  loct += sc_time(2.2, SC_NS);
+  loct += sc_time(5, SC_NS);
 
   SC_REPORT_INFO("CPU", "Col sent to memory"); //Boundary.y sent to memory
   pl.set_command(TLM_WRITE_COMMAND);
@@ -188,7 +176,7 @@ void cpu::CPU_process()
 
   cpu_ic_isoc1 -> b_transport(pl, loct);
   qk.set_and_sync(loct);
-  loct += sc_time(2.2, SC_NS);
+  loct += sc_time(5, SC_NS);
 
   LoadImageMakeMatrix(pathIn, Boundary.x, Boundary.y); //Loading image
 
@@ -200,7 +188,7 @@ void cpu::CPU_process()
 
   cpu_ic_isoc1 -> b_transport(pl, loct);
   qk.set_and_sync(loct);
-  loct += sc_time(2.2, SC_NS);
+  loct += sc_time(5, SC_NS);
  
   getAngle(pathAngle); //Loading Angle
 
@@ -212,7 +200,7 @@ void cpu::CPU_process()
   
   cpu_ic_isoc1 -> b_transport(pl, loct);
   qk.set_and_sync(loct);
-  loct += sc_time(2.2, SC_NS);
+  loct += sc_time(5, SC_NS);
 
   getDirection(pathDirection); //Loading direction
 
@@ -224,7 +212,7 @@ void cpu::CPU_process()
   
   cpu_ic_isoc1 -> b_transport(pl, loct);
   qk.set_and_sync(loct);
-  loct += sc_time(2.2, SC_NS);
+  loct += sc_time(5, SC_NS);
   
   FindNewBorder(Boundary, Angle); //Loading NewBoundary
 
@@ -236,7 +224,7 @@ void cpu::CPU_process()
 
   cpu_ic_isoc1 -> b_transport(pl, loct);
   qk.set_and_sync(loct);
-  loct += sc_time(2.2, SC_NS);
+  loct += sc_time(5, SC_NS);
 
   SC_REPORT_INFO("CPU", "NewCol sent to memory"); //NewBoundary.y sent to memory
   pl.set_command(TLM_WRITE_COMMAND);
@@ -246,17 +234,17 @@ void cpu::CPU_process()
 
   cpu_ic_isoc1 -> b_transport(pl, loct);
   qk.set_and_sync(loct);
-  loct += sc_time(2.2, SC_NS);
+  loct += sc_time(5, SC_NS);
 
-  SC_REPORT_INFO("CPU", "Ready sent"); //Ready sent to memory
+  SC_REPORT_INFO("CPU", "Ready sent to Rotation"); //Ready sent to Rotation
   pl.set_command(TLM_WRITE_COMMAND);
-  pl.set_address(VP_ADDRESS_GPIO_READY);
+  pl.set_address(VP_ADDRESS_ROTATION_READY);
   pl.set_data_ptr((unsigned char *)&ready);
   pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
 
   cpu_ic_isoc2 -> b_transport(pl, loct);
   qk.set_and_sync(loct);
-  loct += sc_time(2.2, SC_NS);
+  loct += sc_time(5, SC_NS);
 }
 
 void cpu::b_transport(pl_t& pl, sc_time& offset)
@@ -273,7 +261,7 @@ void cpu::b_transport(pl_t& pl, sc_time& offset)
 	  {
 	  case VP_ADDRESS_CPU:
 	    RotatedImage = *((ImageMatrix2D*)pl.get_data_ptr());
-	    SC_REPORT_INFO("CPU", "Rotated image loaded from memory");
+	    SC_REPORT_INFO("CPU", "Rotated image loaded from Rotation");
 	    pl.set_response_status(TLM_OK_RESPONSE);
 	    StoreImageToFile(pathOut, RotatedImage, NewBoundary.x, NewBoundary.y);
 	    break;
@@ -288,5 +276,5 @@ void cpu::b_transport(pl_t& pl, sc_time& offset)
       break;
     }
   
-  offset += sc_time(2.2, SC_NS);
+  offset += sc_time(5, SC_NS);
 }

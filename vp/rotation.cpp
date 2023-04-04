@@ -1,4 +1,4 @@
-#include "gpio.hpp"
+#include "rotation.hpp"
 #include "memory.hpp"
 
 #include <systemc>
@@ -12,16 +12,16 @@ using namespace sc_core;
 using namespace sc_dt;
 using namespace tlm;
 
-gpio::gpio(sc_module_name name):sc_module(name),
-				gpio_ic_tsoc("ic_to_gpio"),
-				gpio_ic_isoc("gpio_to_ic"),
-				gpio_mem_isoc("gpio_to_mem")
+rotation::rotation(sc_module_name name):sc_module(name),
+				rot_ic_tsoc("ic_to_hard"),
+				rot_ic_isoc("rot_to_ic"),
+				rot_mem_isoc("rot_to_mem")
 {
-  gpio_ic_tsoc.register_b_transport(this, &gpio::b_transport);
-  SC_REPORT_INFO("GPIO", "Platform is constructed");
+  rot_ic_tsoc.register_b_transport(this, &rotation::b_transport);
+  SC_REPORT_INFO("ROTATION", "Platform is constructed");
 }
 
-ImageMatrix2D gpio::GetRotatedImage(Point2i NewBoundary, Point2i OldBoundary, ImageMatrix2D OldImage, sc_angle angle, string direction)
+ImageMatrix2D rotation::GetRotatedImage(Point2i NewBoundary, Point2i OldBoundary, ImageMatrix2D OldImage, sc_angle angle, string direction)
 {
   ImageMatrix1D PixelArray;
   pixel ZeroPixel;
@@ -253,15 +253,7 @@ ImageMatrix2D gpio::GetRotatedImage(Point2i NewBoundary, Point2i OldBoundary, Im
   return RotatedImage;
 }
 
-double gpio::radian(double x)
-{
-  double const pi = 3.14159265358979323846;
-  radians = (pi / 180) * x;
-  
-  return radians;
-}
-
-void gpio::b_transport(pl_t& pl, sc_time& offset)
+void rotation::b_transport(pl_t& pl, sc_time& offset)
 {
   tlm_command cmd = pl.get_command();
   uint64 addr = pl.get_address();
@@ -273,167 +265,134 @@ void gpio::b_transport(pl_t& pl, sc_time& offset)
       {
 	switch(addr)
 	  {
-	  case GPIO_ROW:
-	    rows = *((int*)data);
-	    pl.set_response_status(TLM_OK_RESPONSE);
-	    SC_REPORT_INFO("GPIO", "Received row");
-	    break;
-	  case GPIO_COL:
-	    cols = *((int*)data);
-	    pl.set_response_status(TLM_OK_RESPONSE);
-	    SC_REPORT_INFO("GPIO", "Received col");
-	    break;
-	  case GPIO_READY:
+	  case ROTATION_READY: 
 	    ready = *((unsigned char*)data);
 	    pl.set_response_status(TLM_OK_RESPONSE);
-	    gpio_s();
-	    SC_REPORT_INFO("GPIO", "Ready");
+	    rotation_s();
+	    SC_REPORT_INFO("ROTATION", "Ready");
 	    break;
 	  default:
 	    pl.set_response_status(TLM_ADDRESS_ERROR_RESPONSE);
-	    SC_REPORT_ERROR("GPIO", "Invalid address");
+	    SC_REPORT_ERROR("ROTATION", "Invalid address");
 	    break;
 	  }
       }
       break;
     default:
       pl.set_response_status(TLM_COMMAND_ERROR_RESPONSE);
-      SC_REPORT_ERROR("GPIO", "Invalid command");
+      SC_REPORT_ERROR("ROTATION", "Invalid command");
       break;
     }
   
-  offset += sc_time(2.2, SC_NS);
+  offset += sc_time(5, SC_NS);
 }
 
-void gpio::msg(const pl_t& pl)
+void rotation::rotation_s()
 {
-  stringstream ss;
-  ss << hex << pl.get_address();
-  int val = *((int*)pl.get_data_ptr());
-  string cmd = "write ";
-  string msg = cmd + "val: " + to_string((int)val) + " addr: " + ss.str();
-  msg += " ,at " + sc_time_stamp().to_string();
-}
-
-void gpio::gpio_s()
-{
-  SC_REPORT_INFO("GPIO", "Row loaded from memory"); //Boundary.x loaded from memory
+  SC_REPORT_INFO("ROTATION", "Row loaded from memory");       //Boundary.x loaded from memory
   pl.set_command(TLM_READ_COMMAND);
   pl.set_address(MEMORY_BOUNDARY_ROW);
   pl.set_data_ptr((unsigned char*)&rows);
   pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
-  gpio_mem_isoc -> b_transport(pl, offset);
+  rot_mem_isoc -> b_transport(pl, offset);
 
   rows = *((int*)pl.get_data_ptr());
   Boundary.x = rows;
   cout << "rows: " << Boundary.x << endl;
   
   qk.set_and_sync(offset);
-  offset += sc_time(2.2, SC_NS);
+  offset += sc_time(5, SC_NS);
 
-  SC_REPORT_INFO("GPIO", "Col loaded from memory");  //Boundary.y loaded from memory
+  SC_REPORT_INFO("ROTATION", "Col loaded from memory");       //Boundary.y loaded from memory
   pl.set_command(TLM_READ_COMMAND);
   pl.set_address(MEMORY_BOUNDARY_COL);
   pl.set_data_ptr((unsigned char*)&cols);
   pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
-  gpio_mem_isoc -> b_transport(pl, offset);
+  rot_mem_isoc -> b_transport(pl, offset);
 
   cols = *((int*)pl.get_data_ptr());
   Boundary.y = cols;
   cout << "cols: " << Boundary.y << endl;
   
   qk.set_and_sync(offset);
-  offset += sc_time(2.2, SC_NS);
+  offset += sc_time(5, SC_NS);
 
-  SC_REPORT_INFO("GPIO", "Image loaded from memory"); //Image loaded from memory
+  SC_REPORT_INFO("ROTATION", "Image loaded from memory");     //Image loaded from memory
   pl.set_command(TLM_READ_COMMAND);
   pl.set_address(MEMORY_IMAGE);
   pl.set_data_ptr((unsigned char*)&Image2D);
   pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
-  gpio_mem_isoc -> b_transport(pl, offset);
+  rot_mem_isoc -> b_transport(pl, offset);
 
-  Image2D = *((ImageMatrix2D*)pl.get_data_ptr()); //Loading image
+  Image2D = *((ImageMatrix2D*)pl.get_data_ptr());             //Loading image
 
   qk.set_and_sync(offset);
-  offset += sc_time(2.2, SC_NS);
+  offset += sc_time(5, SC_NS);
 
-  SC_REPORT_INFO("GPIO", "Angle loaded from memory"); //Angle loaded from memory
+  SC_REPORT_INFO("ROTATION", "Angle loaded from memory");     //Angle loaded from memory
   pl.set_command(TLM_READ_COMMAND);
   pl.set_address(MEMORY_ANGLE);
   pl.set_data_ptr((unsigned char*)&Angle);
   pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
-  gpio_mem_isoc -> b_transport(pl, offset);
+  rot_mem_isoc -> b_transport(pl, offset);
 
   Angle = *((int*)pl.get_data_ptr());
   cout << "Angle: " << Angle << endl;
   
   qk.set_and_sync(offset);
-  offset += sc_time(2.2, SC_NS);
+  offset += sc_time(5, SC_NS);
 
-  SC_REPORT_INFO("GPIO", "Direction loaded from memory"); //Direction loaded from memory
+  SC_REPORT_INFO("ROTATION", "Direction loaded from memory"); //Direction loaded from memory
   pl.set_command(TLM_READ_COMMAND);
   pl.set_address(MEMORY_DIRECTION);
   pl.set_data_ptr((unsigned char*)&direction);
   pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
-  gpio_mem_isoc -> b_transport(pl, offset);
+  rot_mem_isoc -> b_transport(pl, offset);
 
   direction = *((string*)pl.get_data_ptr());
   cout << "Direction: " << direction << endl;
   
   qk.set_and_sync(offset);
-  offset += sc_time(2.2, SC_NS);
-  //direction end
+  offset += sc_time(5, SC_NS);
 
-  SC_REPORT_INFO("GPIO", "NRow loaded from memory"); //NewBoundary.x loaded from memory
+  SC_REPORT_INFO("ROTATION", "NRow loaded from memory");      //NewBoundary.x loaded from memory
   pl.set_command(TLM_READ_COMMAND);
   pl.set_address(MEMORY_BOUNDARY_NROW);
   pl.set_data_ptr((unsigned char*)&nrows);
   pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
-  gpio_mem_isoc -> b_transport(pl, offset);
+  rot_mem_isoc -> b_transport(pl, offset);
 
   nrows = *((int*)pl.get_data_ptr());
   NewBoundary.x = nrows;
   cout << "nrows: " << NewBoundary.x << endl;
   
   qk.set_and_sync(offset);
-  offset += sc_time(2.2, SC_NS);
+  offset += sc_time(5, SC_NS);
 
-  SC_REPORT_INFO("GPIO", "NCol loaded from memory"); //NewBoundary.x loaded from memory
+  SC_REPORT_INFO("ROTATION", "NCol loaded from memory");      //NewBoundary.x loaded from memory
   pl.set_command(TLM_READ_COMMAND);
   pl.set_address(MEMORY_BOUNDARY_NCOL);
   pl.set_data_ptr((unsigned char*)&ncols);
   pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
-  gpio_mem_isoc -> b_transport(pl, offset);
+  rot_mem_isoc -> b_transport(pl, offset);
 
   ncols = *((int*)pl.get_data_ptr());
   NewBoundary.y = ncols;
   cout << "ncols: " << NewBoundary.y << endl;
   
   qk.set_and_sync(offset);
-  offset += sc_time(2.2, SC_NS);
+  offset += sc_time(5, SC_NS);
 
   GetRotatedImage(NewBoundary, Boundary, Image2D, Angle, direction);
-  /*
-  pl.set_command(TLM_WRITE_COMMAND);
-  pl.set_address(VP_ADDRESS_MEMORY_ROW);
-  pl.set_data_ptr((unsigned char*)& row_new);
-  pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
-  gpio_ic_isoc -> b_transport(pl, offset);
 
-  row_new = *((int*)pl.get_data_ptr());
-
-  qk.set_and_sync(offset);
-  offset += sc_time(2.2, SC_NS);
-  SC_REPORT_INFO("GPIO", "New row generated");
-  */
+  SC_REPORT_INFO("ROTATION", "Rotated image sent to CPU");    //Rotated image sent to CPU
   pl.set_command(TLM_WRITE_COMMAND);
   pl.set_address(VP_ADDRESS_CPU);
   pl.set_data_ptr((unsigned char*)& RotatedImage);
   pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
-  gpio_ic_isoc -> b_transport(pl, offset);
+  rot_ic_isoc -> b_transport(pl, offset);
   
   qk.set_and_sync(offset);
-  offset += sc_time(2.2, SC_NS);
-  SC_REPORT_INFO("GPIO", "Rotated image sent to CPU");
+  offset += sc_time(5, SC_NS);
 }
 

@@ -16,8 +16,8 @@ public:
   tlm_utils::simple_target_socket<interconnect> ic_cpu_tsoc2;
   tlm_utils::simple_initiator_socket<interconnect> ic_cpu_isoc;
     
-  tlm_utils::simple_target_socket<interconnect> ic_gpio_tsoc;
-  tlm_utils::simple_initiator_socket<interconnect> ic_gpio_isoc;
+  tlm_utils::simple_target_socket<interconnect> ic_rot_tsoc;
+  tlm_utils::simple_initiator_socket<interconnect> ic_rot_isoc;
 
   tlm_utils::simple_initiator_socket<interconnect> ic_mem_isoc;
 

@@ -13,10 +13,9 @@ public:
   memory(sc_core::sc_module_name);
 
   tlm_utils::simple_target_socket<memory> mem_ic_tsoc;
-  tlm_utils::simple_target_socket<memory> mem_gpio_tsoc;
+  tlm_utils::simple_target_socket<memory> mem_rot_tsoc;
 
 protected:
-  //Point2i Boundary;
   ImageMatrix2D Image2D;
   int rows, nrows;
   int cols, ncols;

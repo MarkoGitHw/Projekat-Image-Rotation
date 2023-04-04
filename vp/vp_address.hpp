@@ -1,27 +1,20 @@
 #ifndef _VP_ADDRESS_HPP_
 #define _VP_ADDRESS_HPP_
 
-#include "gpio.hpp"
+#include "rotation.hpp"
 #include "memory.hpp"
 #include "common.hpp"
 
-const sc_dt::uint64 CPU_ROTATED_IMAGE = 0x00000000;
-//const sc_dt::uint64 CPU_COL = 0x00000001;
-
 const sc_dt::uint64 VP_ADDRESS_CPU = 0x47A00000;
-//const sc_dt::uint64 VP_ADDRESS_CPU_ROTATED_IMAGE = VP_ADDRESS_CPU + CPU_ROTATED_IMAGE;
-//const sc_dt::uint64 VP_ADDRESS_CPU_COL = VP_ADDRESS_CPU + CPU_COL;
 
-const sc_dt::uint64 GPIO_ROW = 0x00000000; //loc addr for gpio
-const sc_dt::uint64 GPIO_COL = 0x00000001;
-const sc_dt::uint64 GPIO_READY = 0x00000002;
+const sc_dt::uint64 CPU_ROTATED_IMAGE = 0x00000000;
 
-const sc_dt::uint64 VP_ADDRESS_GPIO = 0x47B00000;
-const sc_dt::uint64 VP_ADDRESS_GPIO_ROW = VP_ADDRESS_GPIO + GPIO_ROW;
-const sc_dt::uint64 VP_ADDRESS_GPIO_COL = VP_ADDRESS_GPIO + GPIO_COL;
-const sc_dt::uint64 VP_ADDRESS_GPIO_READY = VP_ADDRESS_GPIO + GPIO_READY;
+const sc_dt::uint64 ROTATION_READY = 0x00000000;
 
-const sc_dt::uint64 MEMORY_BOUNDARY_ROW = 0x00000000; //loc addr for mem
+const sc_dt::uint64 VP_ADDRESS_ROTATION = 0x47B00000;
+const sc_dt::uint64 VP_ADDRESS_ROTATION_READY = VP_ADDRESS_ROTATION + ROTATION_READY;
+
+const sc_dt::uint64 MEMORY_BOUNDARY_ROW = 0x00000000; 
 const sc_dt::uint64 MEMORY_BOUNDARY_COL = 0x00000001;
 const sc_dt::uint64 MEMORY_IMAGE = 0x00000002;
 const sc_dt::uint64 MEMORY_ANGLE = 0x00000003;
