@@ -16,7 +16,7 @@ public:
   tlm_utils::simple_target_socket<memory> mem_rot_tsoc;
 
 protected:
-  ImageMatrix2D Image2D;
+  ImageMatrix2D Image2D, RotatedImage2D;
   int rows, nrows;
   int cols, ncols;
   int Angle;

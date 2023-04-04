@@ -62,6 +62,11 @@ void memory::b_transport(pl_t& pl, sc_time& offset)
 	    pl.set_response_status(TLM_OK_RESPONSE);
 	    msg(pl);
 	    break;
+	  case MEMORY_ROTATED_IMAGE:         //MEMORY place 7
+	    RotatedImage2D = *((ImageMatrix2D*)pl.get_data_ptr());
+	    pl.set_response_status(TLM_OK_RESPONSE);
+	    SC_REPORT_INFO("Memory", "Rotated image received");
+	    break;
 	  default:
 	    pl.set_response_status(TLM_ADDRESS_ERROR_RESPONSE);
 	    SC_REPORT_ERROR("MEMORY", "Invalid address");
@@ -104,6 +109,10 @@ void memory::b_transport(pl_t& pl, sc_time& offset)
 	  default:
 	    pl.set_response_status(TLM_ADDRESS_ERROR_RESPONSE);
 	    SC_REPORT_INFO("MEMORY", "Invalid address");
+	    break;
+	  case MEMORY_ROTATED_IMAGE:         //MEMORY place 7
+	    pl.set_data_ptr((unsigned char *)& RotatedImage2D);
+	    pl.set_response_status(TLM_OK_RESPONSE);
 	    break;
 	  }
       }
