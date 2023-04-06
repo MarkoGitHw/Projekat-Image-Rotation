@@ -151,9 +151,6 @@ double cpu::radian(double x)
 
 void cpu::CPU_process()
 {
-  //sc_time loct;
-  //tlm_generic_payload pl;
-  //tlm_utils::tlm_quantumkeeper qk;
   qk.reset();
 
   LoadBoundary(pathBoundary);
@@ -251,10 +248,10 @@ void cpu::cpu_s()
 {
   SC_REPORT_INFO("ROTATION", "Rotated image loaded from memory");     //Image loaded from memory
   pl.set_command(TLM_READ_COMMAND);
-  pl.set_address(VP_ADDRESS_MEMORY_ROTATED_IMAGE);
+  pl.set_address(MEMORY_ROTATED_IMAGE);
   pl.set_data_ptr((unsigned char*)& RotatedImage);
   pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
-  cpu_ic_isoc1 -> b_transport(pl, loct);
+  cpu_mem_isoc -> b_transport(pl, loct);
 
   RotatedImage = *((ImageMatrix2D*)pl.get_data_ptr());             //Loading image
 
@@ -277,12 +274,8 @@ void cpu::b_transport(pl_t& pl, sc_time& offset)
 	switch(addr)
 	  {
 	  case VP_ADDRESS_CPU:
-	    //RotatedImage = *((ImageMatrix2D*)pl.get_data_ptr());
-	    //SC_REPORT_INFO("CPU", "Rotated image loaded from Rotation");
-	    //pl.set_response_status(TLM_OK_RESPONSE);
-	    //StoreImageToFile(pathOut, RotatedImage, NewBoundary.x, NewBoundary.y);
 	    done = *((unsigned char*)pl.get_data_ptr());
-	    SC_REPORT_INFO("CPU", "Rotated image loaded from Rotation");
+	    SC_REPORT_INFO("CPU", "Rotated image loaded from memory");
 	    pl.set_response_status(TLM_OK_RESPONSE);
 	    cpu_s();
 	    break;

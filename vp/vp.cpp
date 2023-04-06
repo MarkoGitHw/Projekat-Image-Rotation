@@ -11,6 +11,7 @@ vp::vp(sc_module_name name):
 {
   soft.cpu_ic_isoc1.bind(ic.ic_cpu_tsoc1);
   soft.cpu_ic_isoc2.bind(ic.ic_cpu_tsoc2);
+  soft.cpu_mem_isoc.bind(bram.mem_cpu_tsoc);
   ic.ic_cpu_isoc.bind(soft.cpu_ic_tsoc);
   ic.ic_rot_isoc.bind(hard.rot_ic_tsoc);
   ic.ic_mem_isoc.bind(bram.mem_ic_tsoc);
