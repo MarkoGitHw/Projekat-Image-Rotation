@@ -14,8 +14,8 @@ public:
   rotation(sc_core::sc_module_name);
 
   tlm_utils::simple_target_socket<rotation> rot_ic_tsoc;
-  tlm_utils::simple_initiator_socket<rotation> rot_mem_isoc;
   tlm_utils::simple_initiator_socket<rotation> rot_ic_isoc;
+  tlm_utils::simple_initiator_socket<rotation> rot_mem_isoc;
 
 protected:
   int rows, cols;

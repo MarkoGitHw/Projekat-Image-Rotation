@@ -15,8 +15,8 @@ public:
   cpu(sc_core::sc_module_name);
 
   tlm_utils::simple_initiator_socket<cpu> cpu_ic_isoc1;
-  tlm_utils::simple_initiator_socket<cpu> cpu_ic_isoc2;
-  tlm_utils::simple_initiator_socket<cpu> cpu_mem_isoc;
+  tlm_utils::simple_initiator_socket<cpu> cpu_mem_isoc2;
+  tlm_utils::simple_initiator_socket<cpu> cpu_mem_isoc1;
   tlm_utils::simple_target_socket<cpu> cpu_ic_tsoc;
   
   void setPath(char *pathB, char *pathI, char *pathO, char *pathA, char *pathD);

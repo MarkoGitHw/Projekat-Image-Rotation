@@ -387,10 +387,10 @@ void rotation::rotation_s()
 
   SC_REPORT_INFO("ROTATION", "Rotated image sent to memory");    //Rotated image sent to memory
   pl.set_command(TLM_WRITE_COMMAND);
-  pl.set_address(VP_ADDRESS_MEMORY_ROTATED_IMAGE);
+  pl.set_address(MEMORY_ROTATED_IMAGE);
   pl.set_data_ptr((unsigned char*)& RotatedImage);
   pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
-  rot_ic_isoc -> b_transport(pl, offset);
+  rot_mem_isoc -> b_transport(pl, offset);
   
   qk.set_and_sync(offset);
   offset += sc_time(5, SC_NS);
