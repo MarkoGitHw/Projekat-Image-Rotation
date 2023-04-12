@@ -12,11 +12,12 @@ class memory:public sc_core::sc_module
 public:
   memory(sc_core::sc_module_name);
 
-  tlm_utils::simple_target_socket<memory> mem_ic_tsoc;
   tlm_utils::simple_target_socket<memory> mem_rot_tsoc;
-
+  tlm_utils::simple_target_socket<memory> mem_cpu_tsoc1;
+  tlm_utils::simple_target_socket<memory> mem_cpu_tsoc2;
+  
 protected:
-  ImageMatrix2D Image2D;
+  ImageMatrix2D Image2D, RotatedImage2D;
   int rows, nrows;
   int cols, ncols;
   int Angle;

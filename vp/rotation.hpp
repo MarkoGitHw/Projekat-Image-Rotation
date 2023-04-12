@@ -14,20 +14,20 @@ public:
   rotation(sc_core::sc_module_name);
 
   tlm_utils::simple_target_socket<rotation> rot_ic_tsoc;
-  tlm_utils::simple_initiator_socket<rotation> rot_mem_isoc;
   tlm_utils::simple_initiator_socket<rotation> rot_ic_isoc;
+  tlm_utils::simple_initiator_socket<rotation> rot_mem_isoc;
 
 protected:
   int rows, cols;
   int nrows, ncols;
   int Angle;
   Point2i Boundary, NewBoundary;
-  sc_core::sc_time offset;
-  unsigned char ready;
+  unsigned char ready, done;
   std::string direction;
   ImageMatrix2D Image2D, RotatedImage;
   
   tlm::tlm_generic_payload pl;
+  sc_core::sc_time offset;
   tlm_utils::tlm_quantumkeeper qk;
 
   ImageMatrix2D GetRotatedImage(Point2i NewBoundary, Point2i OldBoundary, ImageMatrix2D OldImage, sc_angle angle, std::string direction);

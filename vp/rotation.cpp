@@ -385,10 +385,20 @@ void rotation::rotation_s()
 
   GetRotatedImage(NewBoundary, Boundary, Image2D, Angle, direction);
 
-  SC_REPORT_INFO("ROTATION", "Rotated image sent to CPU");    //Rotated image sent to CPU
+  SC_REPORT_INFO("ROTATION", "Rotated image sent to memory");    //Rotated image sent to memory
+  pl.set_command(TLM_WRITE_COMMAND);
+  pl.set_address(MEMORY_ROTATED_IMAGE);
+  pl.set_data_ptr((unsigned char*)& RotatedImage);
+  pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
+  rot_mem_isoc -> b_transport(pl, offset);
+  
+  qk.set_and_sync(offset);
+  offset += sc_time(5, SC_NS);
+
+  SC_REPORT_INFO("ROTATION", "Done sent to CPU");    //Done sent to CPU
   pl.set_command(TLM_WRITE_COMMAND);
   pl.set_address(VP_ADDRESS_CPU);
-  pl.set_data_ptr((unsigned char*)& RotatedImage);
+  pl.set_data_ptr((unsigned char*)& done);
   pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
   rot_ic_isoc -> b_transport(pl, offset);
   

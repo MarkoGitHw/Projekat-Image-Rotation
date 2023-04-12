@@ -151,30 +151,27 @@ double cpu::radian(double x)
 
 void cpu::CPU_process()
 {
-  sc_time loct;
-  tlm_generic_payload pl;
-  tlm_utils::tlm_quantumkeeper qk;
   qk.reset();
 
   LoadBoundary(pathBoundary);
 
   SC_REPORT_INFO("CPU", "Row sent to memory"); //Boundary.x sent to memory
   pl.set_command(TLM_WRITE_COMMAND);
-  pl.set_address(VP_ADDRESS_MEMORY_BOUNDARY_ROW);
+  pl.set_address(MEMORY_BOUNDARY_ROW);
   pl.set_data_ptr((unsigned char *)&Boundary.x);
   pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
 
-  cpu_ic_isoc1 -> b_transport(pl, loct);
+  cpu_mem_isoc1 -> b_transport(pl, loct);
   qk.set_and_sync(loct);
   loct += sc_time(5, SC_NS);
 
   SC_REPORT_INFO("CPU", "Col sent to memory"); //Boundary.y sent to memory
   pl.set_command(TLM_WRITE_COMMAND);
-  pl.set_address(VP_ADDRESS_MEMORY_BOUNDARY_COL);
+  pl.set_address(MEMORY_BOUNDARY_COL);
   pl.set_data_ptr((unsigned char *)&Boundary.y);
   pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
 
-  cpu_ic_isoc1 -> b_transport(pl, loct);
+  cpu_mem_isoc1 -> b_transport(pl, loct);
   qk.set_and_sync(loct);
   loct += sc_time(5, SC_NS);
 
@@ -182,11 +179,11 @@ void cpu::CPU_process()
 
   SC_REPORT_INFO("CPU", "Image sent to memory"); //Image sent to memory
   pl.set_command(TLM_WRITE_COMMAND);
-  pl.set_address(VP_ADDRESS_MEMORY_IMAGE);
+  pl.set_address(MEMORY_IMAGE);
   pl.set_data_ptr((unsigned char *)&Image2D);
   pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
 
-  cpu_ic_isoc1 -> b_transport(pl, loct);
+  cpu_mem_isoc1 -> b_transport(pl, loct);
   qk.set_and_sync(loct);
   loct += sc_time(5, SC_NS);
  
@@ -194,11 +191,11 @@ void cpu::CPU_process()
 
   SC_REPORT_INFO("CPU", "Angle sent to memory"); //Angle sent memory
   pl.set_command(TLM_WRITE_COMMAND);
-  pl.set_address(VP_ADDRESS_MEMORY_ANGLE);
+  pl.set_address(MEMORY_ANGLE);
   pl.set_data_ptr((unsigned char *)&Angle);
   pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
   
-  cpu_ic_isoc1 -> b_transport(pl, loct);
+  cpu_mem_isoc1 -> b_transport(pl, loct);
   qk.set_and_sync(loct);
   loct += sc_time(5, SC_NS);
 
@@ -206,11 +203,11 @@ void cpu::CPU_process()
 
   SC_REPORT_INFO("CPU", "Direction sent to memory"); //Direction sent to memory
   pl.set_command(TLM_WRITE_COMMAND);
-  pl.set_address(VP_ADDRESS_MEMORY_DIRECTION);
+  pl.set_address(MEMORY_DIRECTION);
   pl.set_data_ptr((unsigned char *)&direction);
   pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
   
-  cpu_ic_isoc1 -> b_transport(pl, loct);
+  cpu_mem_isoc1 -> b_transport(pl, loct);
   qk.set_and_sync(loct);
   loct += sc_time(5, SC_NS);
   
@@ -218,33 +215,50 @@ void cpu::CPU_process()
 
   SC_REPORT_INFO("CPU", "NewRow sent to memory"); //NewBoundary.x sent to memory
   pl.set_command(TLM_WRITE_COMMAND);
-  pl.set_address(VP_ADDRESS_MEMORY_BOUNDARY_NROW);
+  pl.set_address(MEMORY_BOUNDARY_NROW);
   pl.set_data_ptr((unsigned char *)&NewBoundary.x);
   pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
 
-  cpu_ic_isoc1 -> b_transport(pl, loct);
+  cpu_mem_isoc1 -> b_transport(pl, loct);
   qk.set_and_sync(loct);
   loct += sc_time(5, SC_NS);
 
   SC_REPORT_INFO("CPU", "NewCol sent to memory"); //NewBoundary.y sent to memory
   pl.set_command(TLM_WRITE_COMMAND);
-  pl.set_address(VP_ADDRESS_MEMORY_BOUNDARY_NCOL);
+  pl.set_address(MEMORY_BOUNDARY_NCOL);
   pl.set_data_ptr((unsigned char *)&NewBoundary.y);
+  pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
+
+  cpu_mem_isoc1 -> b_transport(pl, loct);
+  qk.set_and_sync(loct);
+  loct += sc_time(5, SC_NS);
+
+  SC_REPORT_INFO("CPU", "Ready sent to Rotation"); //Ready sent to Rotation
+  pl.set_command(TLM_WRITE_COMMAND); 
+  pl.set_address(VP_ADDRESS_ROTATION_READY);
+  pl.set_data_ptr((unsigned char *)&ready);
   pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
 
   cpu_ic_isoc1 -> b_transport(pl, loct);
   qk.set_and_sync(loct);
   loct += sc_time(5, SC_NS);
+}
 
-  SC_REPORT_INFO("CPU", "Ready sent to Rotation"); //Ready sent to Rotation
-  pl.set_command(TLM_WRITE_COMMAND);
-  pl.set_address(VP_ADDRESS_ROTATION_READY);
-  pl.set_data_ptr((unsigned char *)&ready);
+void cpu::cpu_s()
+{
+  SC_REPORT_INFO("ROTATION", "Rotated image loaded from memory");     //Image loaded from memory
+  pl.set_command(TLM_READ_COMMAND);
+  pl.set_address(MEMORY_ROTATED_IMAGE);
+  pl.set_data_ptr((unsigned char*)& RotatedImage);
   pl.set_response_status(TLM_INCOMPLETE_RESPONSE);
+  cpu_mem_isoc2 -> b_transport(pl, loct);
 
-  cpu_ic_isoc2 -> b_transport(pl, loct);
+  RotatedImage = *((ImageMatrix2D*)pl.get_data_ptr());             //Loading image
+
   qk.set_and_sync(loct);
   loct += sc_time(5, SC_NS);
+
+  StoreImageToFile(pathOut, RotatedImage, NewBoundary.x, NewBoundary.y);
 }
 
 void cpu::b_transport(pl_t& pl, sc_time& offset)
@@ -260,10 +274,10 @@ void cpu::b_transport(pl_t& pl, sc_time& offset)
 	switch(addr)
 	  {
 	  case VP_ADDRESS_CPU:
-	    RotatedImage = *((ImageMatrix2D*)pl.get_data_ptr());
-	    SC_REPORT_INFO("CPU", "Rotated image loaded from Rotation");
+	    done = *((unsigned char*)pl.get_data_ptr());
+	    SC_REPORT_INFO("CPU", "Rotated image loaded from memory");
 	    pl.set_response_status(TLM_OK_RESPONSE);
-	    StoreImageToFile(pathOut, RotatedImage, NewBoundary.x, NewBoundary.y);
+	    cpu_s();
 	    break;
 	  default:
 	    SC_REPORT_INFO("CPU", "Invalid address");

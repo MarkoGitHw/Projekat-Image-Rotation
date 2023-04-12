@@ -7,11 +7,12 @@ using namespace sc_core;
 using namespace tlm;
 using namespace sc_dt;
 
-memory::memory(sc_module_name name):sc_module(name),
-				    mem_ic_tsoc("ic_mem_soc")
+memory::memory(sc_module_name name):sc_module(name)
+				    //mem_ic_tsoc("ic_mem_soc")
 {
-  mem_ic_tsoc.register_b_transport(this, &memory::b_transport);
   mem_rot_tsoc.register_b_transport(this, &memory::b_transport);
+  mem_cpu_tsoc1.register_b_transport(this, &memory::b_transport);
+  mem_cpu_tsoc2.register_b_transport(this, &memory::b_transport);
   SC_REPORT_INFO("MEMORY", "Platform is constructed.");
 }
 
@@ -62,6 +63,11 @@ void memory::b_transport(pl_t& pl, sc_time& offset)
 	    pl.set_response_status(TLM_OK_RESPONSE);
 	    msg(pl);
 	    break;
+	  case MEMORY_ROTATED_IMAGE:         //MEMORY place 7
+	    RotatedImage2D = *((ImageMatrix2D*)pl.get_data_ptr());
+	    pl.set_response_status(TLM_OK_RESPONSE);
+	    SC_REPORT_INFO("Memory", "Rotated image received");
+	    break;
 	  default:
 	    pl.set_response_status(TLM_ADDRESS_ERROR_RESPONSE);
 	    SC_REPORT_ERROR("MEMORY", "Invalid address");
@@ -104,6 +110,10 @@ void memory::b_transport(pl_t& pl, sc_time& offset)
 	  default:
 	    pl.set_response_status(TLM_ADDRESS_ERROR_RESPONSE);
 	    SC_REPORT_INFO("MEMORY", "Invalid address");
+	    break;
+	  case MEMORY_ROTATED_IMAGE:         //MEMORY place 7
+	    pl.set_data_ptr((unsigned char *)& RotatedImage2D);
+	    pl.set_response_status(TLM_OK_RESPONSE);
 	    break;
 	  }
       }
